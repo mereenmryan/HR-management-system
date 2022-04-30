@@ -1,5 +1,12 @@
 `use struct `
- 
+ allEmployees=[];
+
+let forms = document.getElementById("formId ");
+
+
+forms.addEventListener("submit", handelsubmit);
+
+
 //constructer 
 function Employee (employeeID,fullName,level,imageURL,salary,department)
  {
@@ -16,6 +23,14 @@ function Employee (employeeID,fullName,level,imageURL,salary,department)
 
 
  //function
+
+function handelsubmit(event)
+{
+  event.preventDefault();
+  console.log("formevent",event);
+  console.log(event.target.name.value);
+
+}
 
 
 function getRndInteger(min, max)

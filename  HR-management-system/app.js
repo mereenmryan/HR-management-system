@@ -34,46 +34,135 @@ let Safi_Walid = new Employee("1003", "Safi Walid", "Administration", "Mid-Senio
 let Omar_Zaid = new Employee("1004", "Omar Zaid", "Development", "Senior", "./images/Omar.jpg");
 let Rana_Saleh = new Employee("1005", "Rana Saleh", "Development", "Junior", "./images/Rana.jpg");
 let Hadi_Ahmad = new Employee("1006", "Hadi Ahmad", "Finance", "Mid-Senior", "./images/Hadi.jpg");
-let myCard = document.getElementById("oldCard");
 
 Employee.prototype.render = function () {
-    let conntainer =document.createElement("div")
-    myCard.appendChild(conntainer)
+    let myCard = document.getElementById("oldCard");
+    let conntainer = document.createElement("div");
+    myCard.appendChild(conntainer);
     let image = document.createElement("img");
     image.src = this.ImageUrl;
     conntainer.appendChild(image);
     image.style.width = "12rem";
     image.style.height = "14rem";
-   
     let info = document.createElement("p");
-    info.textContent = `Name:${this.fullName} -ID: ${this.id }  Department:${this.department} -Level:${this.level} -Salary:${this.salary} -Net Salary:${this.netSalary}`;
+    info.textContent = `Name:${this.fullName} -ID: ${this.id}  Department:${this.department} -Level:${this.level} -Salary:${this.salary} -Net Salary:${this.netSalary}`;
     conntainer.appendChild(info);
-    info.style.width="20rem"
-    // conntainer.style.backgroundColor = "rgb(62, 129, 44)";
+    info.style.width = "20rem"   
 }
-
 document.getElementById("oldCard").style.display = "grid";
 document.getElementById("oldCard").style.gridTemplateColumns = "1fr 1fr 1fr ";
-
-
-
-
-
 
 for (let i = 0; i < allEmployees.length; i++) {
     allEmployees[i].render();
 }
 newCard.addEventListener("submit", handleSubmit);
-
 function handleSubmit(event) {
     for (let j = 0; j < allEmployees.length; j++) {
-        var newId = Math.floor(1001 + j);
+        var newId = 1001 + j;
     }
     event.preventDefault();
     let fullName = event.target.fullName.value;
     let department = event.target.department.value;
     let level = event.target.level.value;
     let newImg = event.target.newImg.value;
-    let newEmployee = new Employee(newId, fullName, department, level);
+    let newEmployee = new Employee(newId, fullName, department, level, newImg);
     newEmployee.render();
+    saveData(allEmployees);
 }
+
+// saveData(newEmployee);
+function saveData(data) {
+    let stringfiyData = JSON.stringify(data)
+    localStorage.setItem("employees", stringfiyData);
+}
+function getData() {
+    let retrievedData = localStorage.getItem("employees");
+    let arrayData = JSON.parse(retrievedData);
+    if (arrayData != null) {
+        for (let i = 0; i < arrayData.length; i++) {
+            new Employee(arrayData[i].id, arrayData[i].fullName, arrayData[i].department, arrayData[i].level, arrayData[i].ImageUrl, arrayData[i].salary, arrayData[i].netSalary);
+
+        }
+    }
+
+}
+getData();
+
+// console.log(newEmployee)
+
+function renderTable() {
+    let tableEl = document.getElementById("tableId");
+    let header = document.createElement('thead');
+    tableEl.appendChild(header);
+    let headingRow = document.createElement('tr');
+    header.appendChild(headingRow);
+
+    let thEl = document.createElement('th');
+    headingRow.appendChild(thEl);
+    thEl.textContent = 'Department';
+
+    let thE2 = document.createElement('th');
+    headingRow.appendChild(thE2);
+    thE2.textContent = '# of employees';
+
+    let thE3 = document.createElement('th');
+    headingRow.appendChild(thE3);
+    thE3.textContent = 'Total Salary';
+
+    let thE4 = document.createElement('th');
+    headingRow.appendChild(thE4);
+    thE4.textContent = 'Average';
+}
+function tableFooter() {
+    let tableEl = document.getElementById('tableId');
+    let footer = document.createElement('tfoot');
+    tableEl.appendChild(footer);
+    let rowFooter = document.createElement('tr');
+    footer.appendChild(rowFooter);
+    let tdEl = document.createElement('td');
+    rowFooter.appendChild(tdEl);
+    tdEl.textContent = 'Total';
+
+    tdEl  = document.createElement('td');
+    rowFooter.appendChild(tdEl);
+    tdEl.textContent = "Total number of employees";
+
+    tdEl = document.createElement('td');
+    rowFooter.appendChild(tdEl);
+    tdEl.textContent = "Total salary for all departments";
+
+    tdEl = document.createElement('td');
+    rowFooter.appendChild(tdEl);
+    tdEl.textContent = "Average salary for all departments";
+
+}
+renderTable();
+
+tableFooter();
+
+Employee.prototype.tableBody = function () {
+    for (let i = 1; i < arrayData.length; i++) {
+        if(this.department=="Administration"){
+            administrationNum+=i;
+            administrationSalary+=this.salary;
+            administrationAverage+=administrationSalary/administrationNum
+        }if(this.department=="Marketing"){
+            marketingNum+=i;
+            marketingSalary+=this.salary;
+            marketingAverage+=administrationSalary/administrationNum
+        }if(this.department=="Development"){
+            developmentNum+=i;
+            developmentSalary+=this.salary;
+            developmentAverage+=administrationSalary/administrationNum
+        }if(this.department=="Finance"){
+            financeNum+=i;
+            financeSalary+=this.salary;
+            financeAverage+=administrationSalary/administrationNum
+        }
+        totalNum=administrationNum+marketingNum+developmentNum+financeNum
+        totalSalary=administrationSalary+marketingSalary+developmentSalary+financeSalary
+        totalAverage=administrationAverage+marketingAverage+developmentAverage+financeAverage
+    }
+    document.getElementById("administrationNum").innerHTML = administrationNum;
+}
+tableBody();
